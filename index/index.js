@@ -2,7 +2,7 @@ const config = require('../config');
 const Schema = require('@asl/schema');
 const { Client } = require('@elastic/elasticsearch');
 const { Value } = require('slate');
-const { isPlainObject } = require('lodash');
+const { isPlainObject, pick } = require('lodash');
 const isUUID = require('uuid-validate');
 
 const { Project, ProjectVersion } = Schema(config.db);
@@ -57,6 +57,7 @@ const indexProject = project => {
         body: {
           id: project.id,
           title: data.title,
+          establishment: pick(project.establishment, 'id', 'name'),
           content: [project.licenceHolder.firstName, project.licenceHolder.lastName, content].join(' ')
         }
       });
@@ -66,7 +67,7 @@ Promise.resolve()
   .then(() => {
     return Project.query()
       .select('title', 'id')
-      .withGraphFetched('licenceHolder')
+      .withGraphFetched('[licenceHolder,establishment]')
       .where({ status: 'active' });
   })
   .then(projects => {

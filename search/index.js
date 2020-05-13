@@ -24,15 +24,15 @@ Promise.resolve()
       index,
       _source: [
         'id',
-        'title'
+        'title',
+        'establishment'
       ],
       size: 50,
       body: {
         query: {
           match: {
             content: {
-              query: term,
-              fuzziness: 'AUTO'
+              query: term
             }
           }
         }
