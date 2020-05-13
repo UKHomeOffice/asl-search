@@ -1,0 +1,23 @@
+{
+  "name": "asl-search",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "index": "node -r dotenv/config index/index.js",
+    "search": "node -r dotenv/config search/index.js"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@asl/schema": "^7.44.0",
+    "@elastic/elasticsearch": "^7.6.1",
+    "chalk": "^4.0.0",
+    "minimist": "^1.2.5",
+    "slate": "^0.47.8",
+    "uuid-validate": "0.0.3"
+  },
+  "devDependencies": {
+    "dotenv": "^8.2.0"
+  }
+}
