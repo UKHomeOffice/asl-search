@@ -1,0 +1,5 @@
+extends:
+  - lennym
+
+globals:
+  fetch: readonly
