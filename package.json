@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "index": "node -r dotenv/config lib/cli/indexing.js",
+    "indexer": "node -r dotenv/config lib/cli/indexer.js",
     "search": "node -r dotenv/config lib/cli/search.js",
     "dev": "nodemon -r dotenv/config"
   },
