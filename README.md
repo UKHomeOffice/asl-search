@@ -5,13 +5,13 @@
 Start an elasticsearch instance:
 
 ```
-docker run -d --name elasticsearch -p 9200:9200 -e "discovery.type=single-node" elasticsearch:7.6.2
+docker run -d --name elasticsearch -p 9200:9200 -e "discovery.type=single-node" elasticsearch:7.8.0
 ```
 
 Index the projects:
 
 ```
-npm run index
+npm run indexer
 ```
 
 Search:
