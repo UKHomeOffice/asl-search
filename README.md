@@ -11,7 +11,7 @@ docker run -d --name elasticsearch -p 9200:9200 -e "discovery.type=single-node" 
 Index the projects:
 
 ```
-npm run index
+npm run indexer
 ```
 
 Search:
