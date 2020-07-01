@@ -2,17 +2,26 @@ module.exports = {
   port: process.env.PORT || 8080,
   verboseErrors: process.env.VERBOSE_ERRORS === 'true',
 
-  elastic: {
-    client: {
-      node: process.env.ELASTIC_NODE || 'http://localhost:9200',
-      auth: {
-        username: process.env.ELASTIC_USERNAME,
-        password: process.env.ELASTIC_PASSWORD
+  es: {
+    aws: {
+      region: process.env.AWS_REGION || 'eu-west-2',
+      credentials: {
+        key: process.env.AWS_ES_KEY,
+        secret: process.env.AWS_ES_SECRET
       },
-      maxRetries: 3,
-      requestTimeout: 10000
+      client: {
+        node: process.env.AWS_ES_ENDPOINT,
+        maxRetries: 3,
+        requestTimeout: 10000
+      }
     },
-    index: 'projects'
+    local: {
+      client: {
+        node: process.env.ELASTIC_NODE || 'http://localhost:9200',
+        maxRetries: 3,
+        requestTimeout: 10000
+      }
+    }
   },
 
   // auth: {
