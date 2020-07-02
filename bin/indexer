@@ -11,15 +11,8 @@ const { green } = require('chalk');
 const settings = require('../config');
 const db = require('../lib/db');
 const { createESClient } = require('../lib/elasticsearch');
-const projectsIndexer = require('../lib/indexers/projects');
-const profilesIndexer = require('../lib/indexers/profiles');
-const establishmentsIndexer = require('../lib/indexers/establishments');
 
-const indexers = {
-  projects: projectsIndexer,
-  profiles: profilesIndexer,
-  establishments: establishmentsIndexer
-};
+const indexers = require('../lib/indexers');
 
 const start = process.hrtime();
 const args = minimist(process.argv.slice(2));
