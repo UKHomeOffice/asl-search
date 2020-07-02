@@ -1,0 +1,49 @@
+#!/usr/bin/env node
+
+try {
+  // eslint-disable-next-line implicit-dependencies/no-implicit
+  require('dotenv').config();
+} catch (e) {}
+
+const minimist = require('minimist');
+const { get } = require('lodash');
+const { green } = require('chalk');
+const settings = require('../config');
+const { createESClient } = require('../lib/elasticsearch');
+const search = require('../lib/search');
+
+const start = process.hrtime();
+const args = minimist(process.argv.slice(2));
+const term = args._.join(' ');
+const index = args.i;
+
+if (!term) {
+  console.error('Search term must be defined');
+  process.exit(1);
+}
+
+console.log(`Searching for "${green(term)}"\n`);
+
+Promise.resolve()
+  .then(() => createESClient(settings.es))
+  .then(esClient => search(esClient))
+  .then(search => search(term, index))
+  .then(response => {
+    const count = response.body.hits.total.value;
+    response.body.hits.hits.forEach(h => console.log(h._source));
+
+    const end = process.hrtime(start);
+    console.log(`\nFound ${green(count)} result${count === 1 ? '' : 's'}`);
+    console.log(`Search took: ${green((end[0] * 1000) + Math.round(end[1] / 1e6))}ms`);
+
+    process.exit();
+  })
+  .catch(e => {
+    const error = get(e, 'meta.body.error');
+    if (error) {
+      console.error(error);
+    } else {
+      console.log(e);
+    }
+    process.exit(1);
+  });

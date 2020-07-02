@@ -8,14 +8,32 @@ Start an elasticsearch instance:
 docker run -d --name elasticsearch -p 9200:9200 -e "discovery.type=single-node" elasticsearch:7.8.0
 ```
 
-Index the projects:
+Index all known models:
 
 ```
-npm run indexer
+bin/indexer all
+```
+
+Index a specific model:
+
+```
+bin/indexer <model>
+```
+
+e.g.
+
+```
+bin/indexer profiles
 ```
 
 Search:
 
 ```
-npm run search -- <term>
+bin/search -i <model> <searchterm>
+```
+
+e.g.
+
+```
+bin/search -i profiles dr
 ```
