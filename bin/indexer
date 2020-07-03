@@ -34,7 +34,7 @@ Promise.resolve()
             console.log(`Resetting index ${green(key)}`);
             return esClient.indices.delete({ index: key })
               .catch(e => {
-                if (e.type === 'index_not_found_exception') {
+                if (get(e, 'body.error.type') === 'index_not_found_exception') {
                   return;
                 }
                 throw e;
