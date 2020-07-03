@@ -16,7 +16,7 @@ const indexers = require('../lib/indexers');
 
 const start = process.hrtime();
 const args = minimist(process.argv.slice(2));
-const model = args._[0];
+const model = args._[0] || 'all';
 
 console.log(`Attempting to index "${green(model)}"\n`);
 
