@@ -32,7 +32,13 @@ Promise.resolve()
         .then(() => {
           if (args.reset) {
             console.log(`Resetting index ${green(key)}`);
-            return esClient.indices.delete({ index: key });
+            return esClient.indices.delete({ index: key })
+              .catch(e => {
+                if (e.type === 'index_not_found_exception') {
+                  return;
+                }
+                throw e;
+              });
           }
         })
         .then(() => {
