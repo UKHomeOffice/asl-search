@@ -18,20 +18,36 @@ const start = process.hrtime();
 const args = minimist(process.argv.slice(2));
 const model = args._[0] || 'all';
 
-console.log(`Attempting to index "${green(model)}"\n`);
 
 Promise.resolve()
   .then(() => createESClient(settings.es))
   .then(esClient => {
+    const index = key => {
+      console.log(`Indexing ${green(key)}`);
+      const indexer = indexers[key];
+      if (!indexer) {
+        throw new Error(`No indexer available for ${green(model)}.`);
+      }
+      return Promise.resolve()
+        .then(() => {
+          if (args.reset) {
+            console.log(`Resetting index ${green(key)}`);
+            return esClient.indices.delete({ index: key });
+          }
+        })
+        .then(() => {
+          return indexer(db, esClient);
+        })
+        .then(() => {
+          console.log(`Completed index ${green(key)}`);
+          console.log();
+        });
+    };
+
     if (model === 'all') {
-      return Promise.all(map(indexers, indexer => indexer(db, esClient)));
+      return Object.keys(indexers).reduce((p, key) => p.then(() => index(key)), Promise.resolve());
     }
-
-    if (indexers[model]) {
-      return indexers[model](db, esClient);
-    }
-
-    throw new Error(`No indexer available for ${green(model)}. If you want to index everything, pass 'all' as the first argument`);
+    return index(model);
   })
 
   .then(() => {
