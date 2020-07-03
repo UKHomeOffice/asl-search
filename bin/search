@@ -15,7 +15,7 @@ const search = require('../lib/search');
 const start = process.hrtime();
 const args = minimist(process.argv.slice(2));
 const term = args._.join(' ');
-const index = args.i;
+const index = args.index || args.i;
 
 if (!term) {
   console.error('Search term must be defined');

@@ -24,13 +24,12 @@ module.exports = {
     }
   },
 
-  // auth: {
-  //   realm: process.env.KEYCLOAK_REALM,
-  //   url: process.env.KEYCLOAK_URL,
-  //   client: process.env.KEYCLOAK_CLIENT,
-  //   secret: process.env.KEYCLOAK_SECRET,
-  //   permissions: process.env.PERMISSIONS_SERVICE
-  // },
+  auth: {
+    realm: process.env.KEYCLOAK_REALM,
+    url: process.env.KEYCLOAK_URL,
+    client: process.env.KEYCLOAK_CLIENT,
+    secret: process.env.KEYCLOAK_SECRET
+  },
 
   db: {
     database: process.env.DATABASE_NAME || 'asl',
