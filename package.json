@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon -r dotenv/config"
+    "dev": "nodemon -r dotenv/config",
+    "indexer": "bin/indexer"
   },
   "author": "",
   "license": "MIT",
