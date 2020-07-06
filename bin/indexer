@@ -30,19 +30,7 @@ Promise.resolve()
       }
       return Promise.resolve()
         .then(() => {
-          if (args.reset) {
-            console.log(`Resetting index ${green(key)}`);
-            return esClient.indices.delete({ index: key })
-              .catch(e => {
-                if (get(e, 'body.error.type') === 'index_not_found_exception') {
-                  return;
-                }
-                throw e;
-              });
-          }
-        })
-        .then(() => {
-          return indexer(db, esClient);
+          return indexer(db, esClient, args);
         })
         .then(() => {
           console.log(`Completed index ${green(key)}`);
