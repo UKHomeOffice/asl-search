@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon -r dotenv/config",
+    "test": "eslint .",
     "indexer": "bin/indexer"
   },
   "author": "",
