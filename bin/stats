@@ -1,0 +1,38 @@
+#!/usr/bin/env node
+
+try {
+  // eslint-disable-next-line implicit-dependencies/no-implicit
+  require('dotenv').config();
+} catch (e) {}
+
+const { inspect } = require('util');
+const minimist = require('minimist');
+const { get } = require('lodash');
+const { green } = require('chalk');
+const settings = require('../config');
+const { createESClient } = require('../lib/elasticsearch');
+
+const args = minimist(process.argv.slice(2));
+const index = args._[0];
+
+if (!index) {
+  console.error('Index must be defined');
+  process.exit(1);
+}
+
+Promise.resolve()
+  .then(() => createESClient(settings.es))
+  .then(esClient => esClient.indices.stats({ index }))
+  .then(response => {
+    console.log(inspect(response.body, { depth: 10 }));
+    process.exit();
+  })
+  .catch(e => {
+    const error = get(e, 'meta.body.error');
+    if (error) {
+      console.error(error);
+    } else {
+      console.log(e);
+    }
+    process.exit(1);
+  });
