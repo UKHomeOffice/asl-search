@@ -12,6 +12,7 @@
   "license": "MIT",
   "dependencies": {
     "@acuris/aws-es-connection": "^1.1.0",
+    "@asl/constants": "^0.7.1",
     "@asl/schema": "^7.44.0",
     "@asl/service": "^7.21.2",
     "@elastic/elasticsearch": "^7.6.1",
