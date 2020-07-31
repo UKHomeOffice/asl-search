@@ -30,7 +30,7 @@ Promise.resolve()
   .then(search => search(term, index))
   .then(response => {
     const count = response.body.hits.total.value;
-    response.body.hits.hits.forEach(h => console.log({ ...h._source, highlight: h.highlight }));
+    response.body.hits.hits.forEach(h => console.log({ ...h._source, score: h._score, highlight: h.highlight }));
 
     const end = process.hrtime(start);
     console.log(`\nFound ${green(count)} result${count === 1 ? '' : 's'}`);
