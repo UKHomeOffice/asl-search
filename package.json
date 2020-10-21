@@ -11,7 +11,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@acuris/aws-es-connection": "^1.1.0",
+    "@acuris/aws-es-connection": "^2.0.1",
     "@asl/constants": "^0.7.1",
     "@asl/schema": "^9.1.0",
     "@asl/service": "^7.21.2",
