@@ -10,15 +10,23 @@ const { get } = require('lodash');
 const { green } = require('chalk');
 const settings = require('../config');
 const { createESClient } = require('../lib/elasticsearch');
-const search = require('../lib/search');
+const globalSearch = require('../lib/search/global/search');
+const establishmentScopedSearch = require('../lib/search/establishment-scoped/search');
 
 const start = process.hrtime();
 const args = minimist(process.argv.slice(2));
 const term = args._.join(' ');
 const index = args.index || args.i;
+const estId = args.est || args.e;
+const estScopedIndexes = ['places'];
 
 if (!term) {
   console.error('Search term must be defined');
+  process.exit(1);
+}
+
+if (estScopedIndexes.includes(index) && !estId) {
+  console.error('Establishment scoped searches require an establishment id e.g. -e 8201');
   process.exit(1);
 }
 
@@ -26,8 +34,13 @@ console.log(`Searching for "${green(term)}"\n`);
 
 Promise.resolve()
   .then(() => createESClient(settings.es))
-  .then(esClient => search(esClient))
-  .then(search => search(term, index))
+  .then(esClient => {
+    if (estScopedIndexes.includes(index)) {
+      const query = { term };
+      return establishmentScopedSearch(esClient)({ establishmentId: estId, indexName: index, query });
+    }
+    return globalSearch(esClient)(term, index);
+  })
   .then(response => {
     const count = response.body.hits.total.value;
     response.body.hits.hits.forEach(h => console.log({ ...h._source, score: h._score, highlight: h.highlight }));
