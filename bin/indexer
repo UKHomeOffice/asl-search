@@ -5,19 +5,18 @@ try {
   require('dotenv').config();
 } catch (e) {}
 
-const { get, map } = require('lodash');
+const { get } = require('lodash');
 const minimist = require('minimist');
 const { green } = require('chalk');
 const settings = require('../config');
 const db = require('../lib/db');
 const { createESClient } = require('../lib/elasticsearch');
 
-const indexers = require('../lib/indexers');
+const { indexers } = require('../lib/indexers');
 
 const start = process.hrtime();
 const args = minimist(process.argv.slice(2));
 const model = args._[0] || 'all';
-
 
 Promise.resolve()
   .then(() => createESClient(settings.es))

@@ -1,6 +1,8 @@
 module.exports = {
   port: process.env.PORT || 8080,
-  verboseErrors: process.env.VERBOSE_ERRORS === 'true',
+  verboseErrors: process.env.VERBOSE_ERRORS === 'TRUE',
+  enableGlobalSearch: process.env.ENABLE_GLOBAL_SEARCH === 'TRUE',
+  enableIndexer: process.env.ENABLE_INDEXER === 'TRUE',
 
   es: {
     aws: {
