@@ -18,11 +18,15 @@ const args = minimist(process.argv.slice(2));
 const term = args._.join(' ');
 const index = args.index || args.i;
 const estId = args.est || args.e;
+const species = args.species || args.s;
 const estScopedIndexes = ['places'];
 
 if (!term) {
-  console.error('Search term must be defined');
-  process.exit(1);
+  // allow pure species search on projects index
+  if (index !== 'projects' || !species) {
+    console.error('Search term must be defined');
+    process.exit(1);
+  }
 }
 
 if (estScopedIndexes.includes(index) && !estId) {
@@ -39,7 +43,7 @@ Promise.resolve()
       const query = { term };
       return establishmentScopedSearch(esClient)({ establishmentId: estId, indexName: index, query });
     }
-    return globalSearch(esClient)(term, index);
+    return globalSearch(esClient)(term, index, { species });
   })
   .then(response => {
     const count = response.body.hits.total.value;
@@ -48,6 +52,11 @@ Promise.resolve()
     const end = process.hrtime(start);
     console.log(`\nFound ${green(count)} result${count === 1 ? '' : 's'}`);
     console.log(`Search took: ${green((end[0] * 1000) + Math.round(end[1] / 1e6))}ms`);
+
+    if (index === 'projects') {
+      console.log(`\nFound ${response.body.species.length} species across all projects:`)
+      console.log(response.body.species);
+    }
 
     process.exit();
   })
