@@ -48,7 +48,7 @@ Promise.resolve()
   })
   .then(response => {
     const count = response.body.hits.total.value;
-    response.body.hits.hits.forEach(h => console.log(JSON.stringify({ ...h._source, score: h._score, highlight: h.highlight }, null, '  ')));
+    response.body.hits.hits.forEach(h => console.log(JSON.stringify({ score: h._score, highlight: h.highlight }, null, '  ')));
 
     const end = process.hrtime(start);
     console.log(`\nFound ${green(count)} result${count === 1 ? '' : 's'}`);
