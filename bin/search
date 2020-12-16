@@ -40,22 +40,24 @@ console.log(`Searching for "${green(term)}"\n`);
 Promise.resolve()
   .then(() => createESClient(settings.es))
   .then(esClient => {
+    const query = { term };
     if (estScopedIndexes.includes(index)) {
-      const query = { term };
       return establishmentScopedSearch(esClient)({ establishmentId: estId, indexName: index, query });
     }
     return globalSearch(esClient)(term, index, { species });
   })
   .then(response => {
     const count = response.body.hits.total.value;
-    response.body.hits.hits.forEach(h => console.log(JSON.stringify({ score: h._score, highlight: h.highlight }, null, '  ')));
+    response.body.hits.hits.forEach(h =>
+      console.log(JSON.stringify({ score: h._score, highlight: h.highlight }, null, '  '))
+    );
 
     const end = process.hrtime(start);
     console.log(`\nFound ${green(count)} result${count === 1 ? '' : 's'}`);
     console.log(`Search took: ${green((end[0] * 1000) + Math.round(end[1] / 1e6))}ms`);
 
     if (index === 'projects' && aggregate) {
-      console.log(`\nFound ${response.body.species.length} species across all projects:`)
+      console.log(`\nFound ${response.body.species.length} species across all projects:`);
       response.body.species.forEach(species => console.log(species));
     }
 
