@@ -15,7 +15,7 @@
     "@asl/constants": "^0.7.1",
     "@asl/projects": "^8.3.0",
     "@asl/schema": "^9.1.0",
-    "@asl/service": "^8.5.0",
+    "@asl/service": "^8.8.4",
     "@elastic/elasticsearch": "^7.9.1",
     "aws-sdk": "^2.864.0",
     "chalk": "^4.0.0",
