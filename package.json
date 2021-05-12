@@ -13,7 +13,7 @@
   "dependencies": {
     "@acuris/aws-es-connection": "^2.1.0",
     "@asl/constants": "^0.7.1",
-    "@asl/projects": "^8.3.0",
+    "@asl/projects": "^9.7.5",
     "@asl/schema": "^9.1.0",
     "@asl/service": "^8.8.4",
     "@elastic/elasticsearch": "^7.9.1",
