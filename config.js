@@ -33,12 +33,21 @@ module.exports = {
     secret: process.env.KEYCLOAK_SECRET
   },
 
-  db: {
+  asldb: {
     database: process.env.DATABASE_NAME || 'asl',
     host: process.env.DATABASE_HOST,
     password: process.env.DATABASE_PASSWORD || 'test-password',
     port: process.env.DATABASE_PORT,
     user: process.env.DATABASE_USERNAME || 'postgres',
+    application_name: 'search'
+  },
+
+  workflowdb: {
+    database: process.env.TASK_DATABASE_NAME || 'taskflow',
+    host: process.env.TASK_DATABASE_HOST,
+    password: process.env.TASK_DATABASE_PASSWORD || 'test-password',
+    port: process.env.TASK_DATABASE_PORT,
+    user: process.env.TASK_DATABASE_USERNAME || 'postgres',
     application_name: 'search'
   }
 
