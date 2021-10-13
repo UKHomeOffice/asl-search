@@ -10,6 +10,7 @@ const minimist = require('minimist');
 const { green } = require('chalk');
 const settings = require('../config');
 const db = require('../lib/db');
+const taskflowDb = require('../lib/db/taskflow');
 const { createESClient } = require('../lib/elasticsearch');
 
 const { indexers } = require('../lib/indexers');
@@ -29,6 +30,9 @@ Promise.resolve()
       }
       return Promise.resolve()
         .then(() => {
+          if (key === 'tasks') {
+            return indexer({ aslSchema: db, taskflowDb, esClient, options: args });
+          }
           return indexer(db, esClient, args);
         })
         .then(() => {
@@ -50,6 +54,7 @@ Promise.resolve()
     console.log(`\nIndexing took: ${(end[0] * 1000) + Math.round(end[1] / 1e6)}ms`);
 
     db.destroy();
+    taskflowDb.destroy();
     process.exit(0);
   })
 
