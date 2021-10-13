@@ -1,0 +1,60 @@
+#!/usr/bin/env node
+try {
+  // eslint-disable-next-line implicit-dependencies/no-implicit
+  require('dotenv').config();
+} catch (e) {}
+
+const { get, sample } = require('lodash');
+const { v4: uuidv4 } = require('uuid');
+const taskflowDb = require('../lib/db/taskflow');
+
+const randomDate = (start, end) => new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
+
+const generateTasks = count => {
+  return new Array(count).fill().map(el => {
+    const date = randomDate(new Date(2019, 6, 1), new Date()).toISOString();
+    return {
+      id: uuidv4(),
+      status: sample(['resolved', 'autoresolved', 'rejected', 'with-inspectorate', 'returned-to-applicant', 'awaiting-endorsement']),
+      data: {
+        model: sample(['profile', 'project', 'pil', 'trainingPil', 'place', 'establishment']),
+        action: sample(['grant', 'create', 'transfer', 'revoke'])
+      },
+      createdAt: date,
+      updatedAt: date,
+      assignedTo: sample([null, null, uuidv4()])
+    };
+  });
+};
+
+const start = process.hrtime();
+
+Promise.resolve()
+  .then(() => {
+    const taskCount = 1000;
+    const insertCount = 100;
+
+    console.log(`Generating and inserting ${taskCount * insertCount} tasks`);
+
+    return Promise.all(new Array(insertCount).fill().map(el => {
+      const tasks = generateTasks(taskCount);
+      return taskflowDb.insert(tasks).into('cases');
+    }));
+  })
+  .then(() => {
+    console.log('Done!');
+    const end = process.hrtime(start);
+    console.log(`\nGenerating tasks took: ${(end[0] * 1000) + Math.round(end[1] / 1e6)}ms`);
+    taskflowDb.destroy();
+    process.exit(0);
+  })
+
+  .catch(err => {
+    const error = get(err, 'meta.body.error');
+    if (error) {
+      console.error(error);
+    } else {
+      console.log(err);
+    }
+    process.exit(1);
+  });
