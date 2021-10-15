@@ -6,11 +6,12 @@ try {
 
 const { get, sample } = require('lodash');
 const { v4: uuidv4 } = require('uuid');
+const aslSchema = require('../lib/db/index');
 const taskflowDb = require('../lib/db/taskflow');
 
 const randomDate = (start, end) => new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
 
-const generateTasks = count => {
+const generateTasks = (count, ids) => {
   return new Array(count).fill().map(el => {
     const date = randomDate(new Date(2019, 6, 1), new Date()).toISOString();
     return {
@@ -18,26 +19,41 @@ const generateTasks = count => {
       status: sample(['resolved', 'autoresolved', 'rejected', 'with-inspectorate', 'returned-to-applicant', 'awaiting-endorsement']),
       data: {
         model: sample(['profile', 'project', 'pil', 'trainingPil', 'place', 'establishment']),
-        action: sample(['grant', 'create', 'transfer', 'revoke'])
+        action: sample(['grant', 'create', 'transfer', 'revoke']),
+        establishmentId: sample(ids.establishments),
+        licenceHolderId: sample(ids.users)
       },
       createdAt: date,
       updatedAt: date,
-      assignedTo: sample([null, null, uuidv4()])
+      assignedTo: sample([null, sample(ids.asru)])
     };
   });
 };
 
 const start = process.hrtime();
 
+const { Establishment, Profile } = aslSchema;
+
 Promise.resolve()
-  .then(() => {
-    const taskCount = 1000;
-    const insertCount = 100;
+  .then(() => Promise.all([
+    Establishment.query().select('id'),
+    Profile.query().select('id').where({ asruUser: false }),
+    Profile.query().select('id').where({ asruUser: true, asruInspector: true })
+  ]))
+  .then(([establishments, users, asru]) => {
+    const taskCount = 100;
+    const insertCount = 10;
+
+    const ids = {
+      establishments: establishments.map(e => e.id),
+      users: users.map(u => u.id),
+      asru: asru.map(a => a.id)
+    };
 
     console.log(`Generating and inserting ${taskCount * insertCount} tasks`);
 
     return Promise.all(new Array(insertCount).fill().map(el => {
-      const tasks = generateTasks(taskCount);
+      const tasks = generateTasks(taskCount, ids);
       return taskflowDb.insert(tasks).into('cases');
     }));
   })
