@@ -9,19 +9,26 @@ const { v4: uuidv4 } = require('uuid');
 const aslSchema = require('../lib/db/index');
 const taskflowDb = require('../lib/db/taskflow');
 
+const taskCount = 1000;
+const insertCount = 100;
+
 const randomDate = (start, end) => new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
 
 const generateTasks = (count, ids) => {
   return new Array(count).fill().map(el => {
     const date = randomDate(new Date(2019, 6, 1), new Date()).toISOString();
+    const model = sample(['profile', 'project', 'pil', 'trainingPil', 'place', 'establishment']);
     return {
       id: uuidv4(),
       status: sample(['resolved', 'autoresolved', 'rejected', 'with-inspectorate', 'returned-to-applicant', 'awaiting-endorsement']),
       data: {
-        model: sample(['profile', 'project', 'pil', 'trainingPil', 'place', 'establishment']),
+        model,
         action: sample(['grant', 'create', 'transfer', 'revoke']),
         establishmentId: sample(ids.establishments),
-        licenceHolderId: sample(ids.users)
+        modelData: {
+          licenceHolderId: sample(ids.users),
+          title: model === 'project' ? 'This is a project' : undefined
+        }
       },
       createdAt: date,
       updatedAt: date,
@@ -35,15 +42,13 @@ const start = process.hrtime();
 const { Establishment, Profile } = aslSchema;
 
 Promise.resolve()
+  .then(() => taskflowDb.raw('TRUNCATE TABLE cases CASCADE'))
   .then(() => Promise.all([
     Establishment.query().select('id'),
     Profile.query().select('id').where({ asruUser: false }),
     Profile.query().select('id').where({ asruUser: true, asruInspector: true })
   ]))
   .then(([establishments, users, asru]) => {
-    const taskCount = 100;
-    const insertCount = 10;
-
     const ids = {
       establishments: establishments.map(e => e.id),
       users: users.map(u => u.id),

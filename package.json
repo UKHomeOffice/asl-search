@@ -29,7 +29,8 @@
     "slate": "^0.47.9",
     "through2": "^4.0.2",
     "uuid": "^3.4.0",
-    "uuid-validate": "0.0.3"
+    "uuid-validate": "0.0.3",
+    "winston": "^3.3.3"
   },
   "devDependencies": {
     "dotenv": "^8.2.0",
