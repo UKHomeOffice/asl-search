@@ -32,6 +32,7 @@ const generateTasks = (count, ids) => {
         establishmentId: sample(ids.establishments),
         modelData: {
           licenceHolderId: sample(ids.users),
+          licenceNumber: Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 10).toUpperCase(),
           title: model === 'project' ? 'This is a project' : undefined
         }
       },
