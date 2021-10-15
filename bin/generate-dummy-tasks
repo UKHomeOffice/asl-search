@@ -4,6 +4,11 @@ try {
   require('dotenv').config();
 } catch (e) {}
 
+if (process.env.NODE_ENV !== 'development') {
+  console.log('NON-DEV ENV DETECTED - THIS SCRIPT WIPES ALL TASK DATA, EXITING');
+  process.exit(1);
+}
+
 const { get, sample } = require('lodash');
 const { v4: uuidv4 } = require('uuid');
 const aslSchema = require('../lib/db/index');
