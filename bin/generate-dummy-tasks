@@ -23,6 +23,7 @@ const generateTasks = (count, ids) => {
   return new Array(count).fill().map(el => {
     const date = randomDate(new Date(2019, 6, 1), new Date()).toISOString();
     const model = sample(['profile', 'project', 'pil', 'trainingPil', 'place', 'establishment']);
+    const licenceHolderId = sample(ids.users);
     return {
       id: uuidv4(),
       status: sample(['resolved', 'autoresolved', 'rejected', 'with-inspectorate', 'returned-to-applicant', 'awaiting-endorsement']),
@@ -30,8 +31,9 @@ const generateTasks = (count, ids) => {
         model,
         action: sample(['grant', 'create', 'transfer', 'revoke']),
         establishmentId: sample(ids.establishments),
+        subject: licenceHolderId,
         modelData: {
-          licenceHolderId: sample(ids.users),
+          licenceHolderId,
           licenceNumber: Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 10).toUpperCase(),
           title: model === 'project' ? 'This is a project' : undefined
         }
