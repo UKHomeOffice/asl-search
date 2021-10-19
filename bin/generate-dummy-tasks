@@ -1,0 +1,89 @@
+#!/usr/bin/env node
+try {
+  // eslint-disable-next-line implicit-dependencies/no-implicit
+  require('dotenv').config();
+} catch (e) {}
+
+if (process.env.NODE_ENV !== 'development') {
+  console.log('NON-DEV ENV DETECTED - THIS SCRIPT WIPES ALL TASK DATA, EXITING');
+  process.exit(1);
+}
+
+const { get, sample } = require('lodash');
+const { v4: uuidv4 } = require('uuid');
+const aslSchema = require('../lib/db/index');
+const taskflowDb = require('../lib/db/taskflow');
+
+const taskCount = 1000;
+const insertCount = 100;
+
+const randomDate = (start, end) => new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
+
+const generateTasks = (count, ids) => {
+  return new Array(count).fill().map(el => {
+    const date = randomDate(new Date(2019, 6, 1), new Date()).toISOString();
+    const model = sample(['profile', 'project', 'pil', 'trainingPil', 'place', 'establishment']);
+    const licenceHolderId = sample(ids.users);
+    return {
+      id: uuidv4(),
+      status: sample(['resolved', 'autoresolved', 'rejected', 'with-inspectorate', 'returned-to-applicant', 'awaiting-endorsement']),
+      data: {
+        model,
+        action: sample(['grant', 'create', 'transfer', 'revoke']),
+        establishmentId: sample(ids.establishments),
+        subject: licenceHolderId,
+        modelData: {
+          licenceHolderId,
+          licenceNumber: Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 10).toUpperCase(),
+          title: model === 'project' ? 'This is a project' : undefined
+        }
+      },
+      createdAt: date,
+      updatedAt: date,
+      assignedTo: sample([null, sample(ids.asru)])
+    };
+  });
+};
+
+const start = process.hrtime();
+
+const { Establishment, Profile } = aslSchema;
+
+Promise.resolve()
+  .then(() => taskflowDb.raw('TRUNCATE TABLE cases CASCADE'))
+  .then(() => Promise.all([
+    Establishment.query().select('id'),
+    Profile.query().select('id').where({ asruUser: false }),
+    Profile.query().select('id').where({ asruUser: true, asruInspector: true })
+  ]))
+  .then(([establishments, users, asru]) => {
+    const ids = {
+      establishments: establishments.map(e => e.id),
+      users: users.map(u => u.id),
+      asru: asru.map(a => a.id)
+    };
+
+    console.log(`Generating and inserting ${taskCount * insertCount} tasks`);
+
+    return Promise.all(new Array(insertCount).fill().map(el => {
+      const tasks = generateTasks(taskCount, ids);
+      return taskflowDb.insert(tasks).into('cases');
+    }));
+  })
+  .then(() => {
+    console.log('Done!');
+    const end = process.hrtime(start);
+    console.log(`\nGenerating tasks took: ${(end[0] * 1000) + Math.round(end[1] / 1e6)}ms`);
+    taskflowDb.destroy();
+    process.exit(0);
+  })
+
+  .catch(err => {
+    const error = get(err, 'meta.body.error');
+    if (error) {
+      console.error(error);
+    } else {
+      console.log(err);
+    }
+    process.exit(1);
+  });
