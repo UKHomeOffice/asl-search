@@ -8,6 +8,7 @@ try {
 const { get } = require('lodash');
 const minimist = require('minimist');
 const { green } = require('chalk');
+const winston = require('winston');
 const settings = require('../config');
 const db = require('../lib/db');
 const taskflowDb = require('../lib/db/taskflow');
@@ -18,6 +19,11 @@ const { indexers } = require('../lib/indexers');
 const start = process.hrtime();
 const args = minimist(process.argv.slice(2));
 const model = args._[0] || 'all';
+
+const logger = winston.createLogger({
+  level: 'debug',
+  transports: [ new winston.transports.Console({ level: process.env.LOG_LEVEL || 'info' }) ]
+});
 
 Promise.resolve()
   .then(() => createESClient(settings.es))
@@ -31,7 +37,7 @@ Promise.resolve()
       return Promise.resolve()
         .then(() => {
           if (key === 'tasks') {
-            return indexer({ aslSchema: db, taskflowDb, esClient, options: args });
+            return indexer({ aslSchema: db, taskflowDb, esClient, logger, options: args });
           }
           return indexer(db, esClient, args);
         })
