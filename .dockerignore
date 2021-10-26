@@ -2,5 +2,4 @@
 .env
 node_modules
 bin/generate-dummy-tasks
-test/text.txt
-test/utils.js
+test
