@@ -2,3 +2,4 @@
 .env
 node_modules
 bin/generate-dummy-tasks
+test

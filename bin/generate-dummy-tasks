@@ -13,6 +13,7 @@ const { get, sample } = require('lodash');
 const { v4: uuidv4 } = require('uuid');
 const aslSchema = require('../lib/db/index');
 const taskflowDb = require('../lib/db/taskflow');
+const { sentence } = require('../test/utils');
 
 const taskCount = 1000;
 const insertCount = 100;
@@ -35,7 +36,7 @@ const generateTasks = (count, ids) => {
         modelData: {
           licenceHolderId,
           licenceNumber: Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 10).toUpperCase(),
-          title: model === 'project' ? 'This is a project' : undefined
+          title: model === 'project' ? sentence(6, 10, false) : undefined
         }
       },
       createdAt: date,
