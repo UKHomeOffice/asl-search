@@ -31,7 +31,7 @@ steps:
     commands:
       - npm audit --audit-level=high --production
   - name: docker build
-    image: wheelsandcogs:dind-buildx
+    image: wheelsandcogs/dind-buildx:latest
     environment:
       DOCKER_HOST: tcp://docker:2375
       DOCKER_BUILDKIT: 1
