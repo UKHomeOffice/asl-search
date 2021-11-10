@@ -40,10 +40,9 @@ steps:
       NPM_AUTH_TOKEN:
         from_secret: npm_auth_token
     commands:
-      - docker --version
-      - docker buildx version
-      - docker buildx ls
-      - docker build --secret id=username,env=NPM_AUTH_USERNAME --secret id=token,env=NPM_AUTH_TOKEN -t asl-search .
+      - docker buildx create --use
+      - docker buildx build --platform linux/amd64,linux/arm64 --load --secret id=username,env=NPM_AUTH_USERNAME --secret id=token,env=NPM_AUTH_TOKEN -t asl-search .
+      - docker image inspect asl-search
   - name: docker push
     image: docker:dind
     environment:
