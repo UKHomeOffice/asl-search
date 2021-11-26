@@ -36,7 +36,8 @@ const generateTasks = (count, ids) => {
         modelData: {
           licenceHolderId,
           licenceNumber: Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 10).toUpperCase(),
-          title: model === 'project' ? sentence(6, 10, false) : undefined
+          title: model === 'project' ? sentence(6, 10, false) : undefined,
+          status: sample(['inactive', 'active', 'expired', 'revoked'])
         }
       },
       createdAt: date,
@@ -55,7 +56,7 @@ Promise.resolve()
   .then(() => Promise.all([
     Establishment.query().select('id'),
     Profile.query().select('id').where({ asruUser: false }),
-    Profile.query().select('id').where({ asruUser: true, asruInspector: true })
+    Profile.query().select('id').where({ asruUser: true })
   ]))
   .then(([establishments, users, asru]) => {
     const ids = {
