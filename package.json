@@ -20,7 +20,7 @@
     "aws-sdk": "^2.864.0",
     "chalk": "^4.0.0",
     "elasticsearch-writable-stream": "^2.0.1",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "knex": "^0.21.21",
     "lodash": "^4.17.21",
     "minimatch": "^3.0.4",
