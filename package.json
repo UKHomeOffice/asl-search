@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "nodemon -r dotenv/config",
     "test": "eslint .",
+    "test:audit": "audit-ci --high --skip-dev --config .auditrc.json",
     "indexer": "bin/indexer"
   },
   "author": "",
@@ -33,6 +34,7 @@
     "winston": "^3.3.3"
   },
   "devDependencies": {
+    "audit-ci": "^6.5.0",
     "dotenv": "^8.2.0",
     "eslint": "^7.3.1",
     "eslint-config-lennym": "^2.1.2",
