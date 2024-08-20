@@ -37,7 +37,11 @@
     "audit-ci": "^6.5.0",
     "dotenv": "^8.2.0",
     "eslint": "^7.3.1",
-    "eslint-config-lennym": "^2.1.2",
+    "@ukhomeoffice/eslint-config-asl": "^3.0.0",
     "nodemon": "^2.0.4"
+  },
+  "overrides": {
+    "@ukhomeoffice/frontend-toolkit": "^3.0.0",
+    "@ukhomeoffice/react-components@": "^1.0.0"
   }
 }
