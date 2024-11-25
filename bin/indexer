@@ -10,7 +10,7 @@ const minimist = require('minimist');
 const { green } = require('chalk');
 const winston = require('winston');
 const settings = require('../config');
-const db = require('../lib/db');
+const database = require('../lib/db');
 const taskflowDb = require('../lib/db/taskflow');
 const { createESClient } = require('../lib/elasticsearch');
 
@@ -24,6 +24,7 @@ const logger = winston.createLogger({
   level: 'debug',
   transports: [ new winston.transports.Console({ level: process.env.LOG_LEVEL || 'info' }) ]
 });
+const db = Promise.resolve().then(() => database().init());
 
 Promise.resolve()
   .then(() => createESClient(settings.es))
@@ -54,14 +55,22 @@ Promise.resolve()
   })
 
   .then(() => {
-    console.log('Done!');
+    db.then(dbInstance => {
+      if (dbInstance.schema && dbInstance.schema.destroy) {
+        dbInstance.schema.destroy();
+        console.log('dbInstance destroyed' );
+      }
 
-    const end = process.hrtime(start);
-    console.log(`\nIndexing took: ${(end[0] * 1000) + Math.round(end[1] / 1e6)}ms`);
+      if (taskflowDb && taskflowDb.destroy) {
+        taskflowDb.destroy();
+        console.log('taskflowDb destroyed');
+      }
 
-    db.destroy();
-    taskflowDb.destroy();
-    process.exit(0);
+      process.exit(0);
+      console.log('\n\nDone!');
+      const end = process.hrtime(start);
+      console.log(`\nIndexing took: ${(end[0] * 1000) + Math.round(end[1] / 1e6)}ms`);
+    });
   })
 
   .catch(err => {
