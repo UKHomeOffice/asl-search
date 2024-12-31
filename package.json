@@ -1,6 +1,6 @@
 {
   "name": "asl-search",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -13,11 +13,11 @@
   "license": "MIT",
   "dependencies": {
     "@acuris/aws-es-connection": "^2.1.0",
-    "@asl/constants": "^1.2.1",
-    "@asl/projects": "^10.6.2",
-    "@asl/schema": "^10.16.0",
-    "@asl/service": "^9.1.1",
+    "@asl/projects": "^15.7.0",
+    "@asl/schema": "^10.19.0",
+    "@asl/service": "^10.5.3",
     "@elastic/elasticsearch": "^7.9.1",
+    "@ukhomeoffice/asl-constants": "^2.2.0",
     "aws-sdk": "^2.864.0",
     "chalk": "^4.0.0",
     "elasticsearch-writable-stream": "^2.0.1",
@@ -37,7 +37,7 @@
     "audit-ci": "^6.5.0",
     "dotenv": "^8.2.0",
     "eslint": "^7.3.1",
-    "eslint-config-lennym": "^2.1.2",
+    "@ukhomeoffice/eslint-config-asl": "^3.0.0",
     "nodemon": "^2.0.4"
   }
 }
