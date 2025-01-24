@@ -1,6 +1,6 @@
 {
   "name": "asl-search",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -14,7 +14,7 @@
   "dependencies": {
     "@acuris/aws-es-connection": "^2.1.0",
     "@asl/projects": "^15.7.0",
-    "@asl/schema": "^10.19.0",
+    "@asl/schema": "^11.0.0",
     "@asl/service": "^10.5.3",
     "@elastic/elasticsearch": "7.13.0",
     "@ukhomeoffice/asl-constants": "^2.2.0",
@@ -22,11 +22,11 @@
     "chalk": "^4.0.0",
     "elasticsearch-writable-stream": "^2.0.1",
     "express": "^4.17.3",
-    "knex": "^0.21.21",
+    "knex": "^3.1.0",
     "lodash": "^4.17.21",
     "minimatch": "^3.0.4",
     "minimist": "^1.2.6",
-    "objection": "^2.2.17",
+    "objection": "^3.1.5",
     "pg-query-stream": "^4.2.1",
     "slate": "^0.47.9",
     "uuid": "^3.4.0",
