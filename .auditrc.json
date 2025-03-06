@@ -1,8 +1,6 @@
 {
   "comments": [
-    "GHSA-59fq-727j-hm3f: keycloak-connect contains Open redirect vulnerability in the Node.js adapter"
   ],
   "allowlist": [
-    "GHSA-59fq-727j-hm3f"
   ]
 }
